@@ -22,6 +22,8 @@ pub mod tun;
 pub mod udp;
 #[cfg(windows)]
 pub mod windows;
+#[cfg(windows)]
+pub mod redirector_inproc;
 pub mod wireguard;
 
 pub trait PacketSourceConf {

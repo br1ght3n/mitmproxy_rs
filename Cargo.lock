@@ -2231,6 +2231,7 @@ dependencies = [
  "tokio",
  "tokio-util",
  "tun",
+ "windivert",
  "windows 0.61.3",
 ]
 

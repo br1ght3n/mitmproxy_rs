@@ -103,14 +103,11 @@ pub fn start_local_redirector(
 ) -> PyResult<Bound<PyAny>> {
     #[cfg(windows)]
     {
-        let executable_path: std::path::PathBuf = py
-            .import("mitmproxy_windows")?
-            .call_method0("executable_path")?
-            .extract()?;
-        if !executable_path.exists() {
-            return Err(anyhow::anyhow!("{} does not exist", executable_path.display()).into());
-        }
-        let conf = WindowsConf { executable_path };
+        let module_filename_py = py.import("mitmproxy_windows")?.filename()?;
+        let module_filename_str = module_filename_py.to_str()?;
+        let module_path = std::path::PathBuf::from(module_filename_str);
+        let resource_dir = module_path.parent().map(|p| p.to_path_buf());
+        let conf = WindowsConf { resource_dir };
         pyo3_async_runtimes::tokio::future_into_py(py, async move {
             let (server, conf_tx) =
                 Server::init(conf, handle_tcp_stream, handle_udp_stream).await?;
